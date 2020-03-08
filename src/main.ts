@@ -1,5 +1,7 @@
 // Little chess engine...
 
-import { foo } from './logic.js';
+import { createBoard, printBoard } from './logic.js';
 
-foo(2);
+const board = createBoard();
+printBoard(board);
+
