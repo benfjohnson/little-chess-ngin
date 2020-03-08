@@ -1,0 +1,25 @@
+{
+  "name": "little-chess-ngin",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Functional, immutable chess engine written in typescript. Lots of tests and documentation! :)",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node --experimental-modules dist/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benfjohnson/little-chess-ngin.git"
+  },
+  "author": "Ben Johnson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/benfjohnson/little-chess-ngin/issues"
+  },
+  "homepage": "https://github.com/benfjohnson/little-chess-ngin#readme",
+  "devDependencies": {
+    "typescript": "^3.8.3"
+  }
+}
