@@ -1,10 +1,10 @@
-export type Color = "White" | "Black";
+type Color = "White" | "Black";
 
-export type Board = Array<Array<Piece | null>>;
+type Board = Array<Array<Piece | null>>;
 
-export type Rank = "Pawn" | "Knight" | "Bishop" | "Rook" | "Queen" | "King";
+type Rank = "Pawn" | "Knight" | "Bishop" | "Rook" | "Queen" | "King";
 
-export type Piece = { color: Color, rank: Rank };
+type Piece = { color: Color, rank: Rank };
 
 function getMajorMinorPieces(color: Color): Array<Piece> {
   return [ { color, rank: "Rook" }, { color, rank: "Knight" }, { color, rank: "Bishop" }, { color, rank: "Queen" }, { color, rank: "King" }, { color, rank: "Bishop" }, { color, rank: "Knight" }, { color, rank: "Rook" } ];
@@ -18,7 +18,7 @@ function getEmptyRow() {
   return [ ...Array(8) ].map(_ => null);
 }
 
-export function createBoard(): Board {
+function createBoard(): Board {
   return [
     getMajorMinorPieces("Black"),
     getPawns("Black"),
@@ -29,6 +29,42 @@ export function createBoard(): Board {
     getPawns("White"),
     getMajorMinorPieces("White"),
   ];
+}
+
+type Game = {
+  turn: Color,
+  board: Board,
+  mate: Color | null,
+  moveError: string | null,
+};
+
+
+function createGame(): Game {
+  return { turn: 'White', board: createBoard(), mate: null, moveError: null };
+}
+
+export type RowPosition = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H';
+export type ColPosition = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export type BoardPosition = [RowPosition, ColPosition];
+
+function moveGame(fromPos: BoardPosition, toPos: BoardPosition, game: Game): Game {
+  const [fromRow, fromCol] = fromPos;
+  const [toRow, toCol] = toPos;
+
+  const rowMap: { [key in RowPosition]: number } = { 'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7 };
+  const fromRowIndex = rowMap[fromRow];
+  const toRowIndex = rowMap[toRow];
+
+  const pieceToMove: Piece | null  = game.board[rowMap[fromRow]][fromCol - 1];
+  // Need to clone this so we don't trample it's value when nulling out the former position
+  const movedPiece = pieceToMove == null
+    ? null
+    : { ...pieceToMove };
+
+  game.board[fromRowIndex][fromCol - 1] = null;
+  game.board[toRowIndex][toCol - 1] = movedPiece;
+
+  return game;
 }
 
 function printPiece(p: Piece | null, rowIdx: number, pieceIdx: number) {
@@ -63,6 +99,20 @@ function printRowStr(row: Array<Piece | null>, rowIdx: number): string {
   }, '');
 }
 
-export function printBoard(b: Board): void {
+function printBoard(b: Board): void {
   b.forEach((row, rowIdx) => console.log(printRowStr(row, rowIdx)));
 }
+
+function printGame(g: Game): void {
+  console.log(`${g.turn} to move...`);
+  printBoard(g.board);
+}
+
+const engine = {
+  new: createGame,
+  move: moveGame,
+  print: printGame,
+};
+
+export default engine;
+
